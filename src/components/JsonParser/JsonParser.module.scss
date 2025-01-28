@@ -1,18 +1,18 @@
 .jsonParser {
-  max-width: 1200px;
+  max-width: 1900px;
+  height: 90vh;
   margin: 20px auto;
-  padding: 30px 45px 30px 45px;
+  padding: 30px 45px;
   background-color: #1e1e1e;
   color: #e0e0e0;
   border-radius: 10px;
+  display: flex;
+  gap: 25px;
 }
 
-.inputSection {
-  margin-bottom: 25px;
-}
-
+.inputSection,
 .outputSection {
-  margin-bottom: 20px;
+  width: 100%;
 }
 
 .label {
@@ -29,7 +29,7 @@
   background-color: #2d2d2d;
   border: 1px solid #404040;
   border-radius: 4px;
-  height: 310px;
+  height: 79vh;
   overflow: hidden;
 }
 
@@ -44,6 +44,8 @@
   font-family: monospace;
   font-size: 14px;
   overflow-y: hidden;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 .lineNumber {
@@ -72,8 +74,8 @@
   }
 
   &::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
   }
 }
 
@@ -111,7 +113,7 @@
   flex: 1;
   margin: 0;
   height: 100%;
-  padding: 12px;
+  white-space: pre-wrap;
   background-color: transparent;
   white-space: pre;
   color: #e0e0e0;
@@ -128,8 +130,8 @@
   }
 
   &::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
   }
 }
 

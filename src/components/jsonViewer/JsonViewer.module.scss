@@ -1,0 +1,81 @@
+.jsonViewer {
+  font-family: monospace;
+  color: #d6ecad;
+  background-color: #2d2d2d;
+  max-width: 765.61px;
+  border-radius: 5px;
+  overflow-y: auto;
+  overflow-x: auto;
+  &::-webkit-scrollbar-track {
+    background: #1e1e1e;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #555;
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+.collapsibleKey {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: large;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px 0;
+  color: #fff;
+}
+
+.collapsibleKey:hover {
+  color: #b2b5b8;
+}
+
+.key {
+  margin-left: 8px;
+}
+
+.collapsibleContent {
+  padding-left: 30px;
+}
+
+.arrayItem,
+.objectItem {
+  margin-top: 5px;
+}
+
+.value {
+  padding-left: 20px;
+  color: #ccc;
+}
+
+.string {
+  color: #d14e61;
+}
+
+.number {
+  color: #6a9dca;
+}
+
+.boolean {
+  color: #2c9f6b;
+}
+
+.null {
+  color: #9e9e9e;
+}
+
+.ChevronRight,
+.ChevronDown {
+  color: #007bff;
+  transition: transform 0.3s ease;
+}
+
+.collapsibleKey:hover .ChevronRight,
+.collapsibleKey:hover .ChevronDown {
+  transform: scale(1.2);
+}

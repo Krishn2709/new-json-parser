@@ -9,6 +9,7 @@ import {
 } from "../../lib/store/features/jsonParseSlice";
 import styles from "./JsonParser.module.scss";
 import { toast } from "react-hot-toast";
+import JsonViewer from "../jsonViewer/jsonViewer";
 
 const JsonParser = () => {
   const dispatch = useDispatch();
@@ -18,16 +19,12 @@ const JsonParser = () => {
   const [inputLineCount, setInputLineCount] = useState(1);
   const [outputLineCount, setOutputLineCount] = useState(1);
   const textAreaRef = useRef(null);
+  const inputLineNumbersRef = useRef(null);
+  const outputLineNumbersRef = useRef(null);
 
   const updateLineCount = (text, setCount) => {
     const lines = text.split("\n").length;
     setCount(lines);
-  };
-
-  const convertToString = (obj) => {
-    let jsonString = JSON.stringify(obj, null, 2);
-    jsonString = jsonString.replace(/"([^"]+)":/g, "$1:");
-    return jsonString;
   };
 
   const handleInputChange = (e) => {
@@ -44,9 +41,8 @@ const JsonParser = () => {
 
     try {
       const parsed = JSON.parse(input);
-      const formatted = convertToString(parsed);
-      dispatch(setParsedOutput(formatted));
-      updateLineCount(formatted, setOutputLineCount);
+      dispatch(setParsedOutput(parsed));
+      updateLineCount(JSON.stringify(parsed, null, 2), setOutputLineCount);
     } catch (err) {
       dispatch(setError("Invalid JSON format: " + err.message));
     }
@@ -54,7 +50,9 @@ const JsonParser = () => {
 
   const copyText = async () => {
     try {
-      await navigator.clipboard.writeText(parsedOutput);
+      await navigator.clipboard.writeText(
+        JSON.stringify(parsedOutput, null, 2)
+      );
       toast.success("Text copied to clipboard!");
     } catch (err) {
       toast.error("Failed to copy text. Please try again.");
@@ -64,7 +62,10 @@ const JsonParser = () => {
   useEffect(() => {
     updateLineCount(input, setInputLineCount);
     if (parsedOutput) {
-      updateLineCount(parsedOutput, setOutputLineCount);
+      updateLineCount(
+        JSON.stringify(parsedOutput, null, 2),
+        setOutputLineCount
+      );
     }
   }, []);
 
@@ -76,6 +77,12 @@ const JsonParser = () => {
     ));
   };
 
+  const handleScroll = (e, lineNumbersRef) => {
+    if (lineNumbersRef.current) {
+      lineNumbersRef.current.scrollTop = e.target.scrollTop;
+    }
+  };
+
   return (
     <div className={styles.jsonParser}>
       <div className={styles.inputSection}>
@@ -83,7 +90,7 @@ const JsonParser = () => {
           Enter JSON:
         </label>
         <div className={styles.textAreaDiv}>
-          <div className={styles.lineNumbers}>
+          <div className={styles.lineNumbers} ref={inputLineNumbersRef}>
             {lineNumbers(inputLineCount)}
           </div>
           <textarea
@@ -91,6 +98,7 @@ const JsonParser = () => {
             id="jsonInput"
             value={input}
             onChange={handleInputChange}
+            onScroll={(e) => handleScroll(e, inputLineNumbersRef)}
             placeholder="Paste your JSON here..."
             className={styles.textArea}
             wrap="off"
@@ -100,7 +108,7 @@ const JsonParser = () => {
 
       <div className={styles.buttonContainer}>
         <button onClick={validateAndParseJSON} className={styles.parseButton}>
-          Parse JSON
+          DECODE
         </button>
       </div>
 
@@ -111,31 +119,35 @@ const JsonParser = () => {
         ) : (
           <div className={styles.outputContainer}>
             <div className={styles.outputDiv}>
-              <div className={styles.lineNumbers}>
+              <div className={styles.lineNumbers} ref={outputLineNumbersRef}>
                 {lineNumbers(outputLineCount)}
               </div>
               <div
                 className={`${styles.output} ${isValid ? styles.valid : ""}`}
+                onScroll={(e) => handleScroll(e, outputLineNumbersRef)}
               >
-                {parsedOutput}
+                {parsedOutput && <JsonViewer data={parsedOutput} />}
               </div>
             </div>
+
             {parsedOutput && (
               <button onClick={copyText} className={styles.copyButton}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className={styles.svg}
                 >
-                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                  <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                  <path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                  <path d="M16 4h2a2 2 0 0 1 2 2v4" />
+                  <path d="M21 14H11" />
+                  <path d="m15 10-4 4 4 4" />
                 </svg>
               </button>
             )}

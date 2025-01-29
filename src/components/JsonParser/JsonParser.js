@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setInput,
@@ -9,7 +9,7 @@ import {
 } from "../../lib/store/features/jsonParseSlice";
 import styles from "./JsonParser.module.scss";
 import { toast } from "react-hot-toast";
-import JsonViewer from "../jsonViewer/jsonViewer";
+import JsonViewer from "../jsonViewer/JsonViewer";
 
 const JsonParser = () => {
   const dispatch = useDispatch();
@@ -17,10 +17,8 @@ const JsonParser = () => {
     (state) => state.json
   );
   const [inputLineCount, setInputLineCount] = useState(1);
-  const [outputLineCount, setOutputLineCount] = useState(1);
   const textAreaRef = useRef(null);
   const inputLineNumbersRef = useRef(null);
-  const outputLineNumbersRef = useRef(null);
 
   const updateLineCount = (text, setCount) => {
     const lines = text.split("\n").length;
@@ -33,6 +31,42 @@ const JsonParser = () => {
     updateLineCount(newValue, setInputLineCount);
   };
 
+  const formatJSON = () => {
+    if (!input.trim()) {
+      dispatch(setError("Please enter JSON content"));
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(input);
+      const formatted = JSON.stringify(parsed, null, 2);
+      dispatch(setInput(formatted));
+      updateLineCount(formatted, setInputLineCount);
+      toast.success("JSON formatted successfully!");
+    } catch (err) {
+      dispatch(setError("Invalid JSON format: " + err.message));
+    }
+  };
+
+  const clearContent = () => {
+    dispatch(setInput(""));
+    dispatch(setParsedOutput(null));
+    dispatch(setError(""));
+    setInputLineCount(1);
+    toast.success("Content cleared!");
+  };
+
+  const pasteContent = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      dispatch(setInput(text));
+      updateLineCount(text, setInputLineCount);
+      toast.success("Content pasted successfully!");
+    } catch (err) {
+      toast.error("Failed to paste content. Please try again.");
+    }
+  };
+
   const validateAndParseJSON = () => {
     if (!input.trim()) {
       dispatch(setError("Please enter JSON content"));
@@ -42,32 +76,59 @@ const JsonParser = () => {
     try {
       const parsed = JSON.parse(input);
       dispatch(setParsedOutput(parsed));
-      updateLineCount(JSON.stringify(parsed, null, 2), setOutputLineCount);
     } catch (err) {
       dispatch(setError("Invalid JSON format: " + err.message));
     }
   };
 
+  const formatJSONWithoutQuotes = (obj, indent = 2) => {
+    if (obj === null) return "null";
+    if (typeof obj === "undefined") return "undefined";
+    if (typeof obj === "number") return obj.toString();
+    if (typeof obj === "boolean") return obj.toString();
+    if (typeof obj === "string") return `${obj}`;
+
+    if (Array.isArray(obj)) {
+      if (obj.length === 0) return "[]";
+      const items = obj
+        .map((item) => formatJSONWithoutQuotes(item, indent))
+        .join(",\n");
+      return `[\n${items
+        .split("\n")
+        .map((line) => " ".repeat(indent) + line)
+        .join("\n")}\n]`;
+    }
+
+    if (typeof obj === "object") {
+      if (Object.keys(obj).length === 0) return "{}";
+      const pairs = Object.entries(obj)
+        .map(([key, value]) => {
+          const formattedValue = formatJSONWithoutQuotes(value, indent + 2);
+          return `${key}: ${formattedValue}`;
+        })
+        .join(",\n");
+      return `{\n${pairs
+        .split("\n")
+        .map((line) => " ".repeat(indent) + line)
+        .join("\n")}\n}`;
+    }
+
+    return obj.toString();
+  };
+
   const copyText = async () => {
+    if (!parsedOutput) return;
+
     try {
-      await navigator.clipboard.writeText(
-        JSON.stringify(parsedOutput, null, 2)
-      );
+      console.log(parsedOutput);
+      console.log(formatJSONWithoutQuotes(parsedOutput));
+      const formattedText = formatJSONWithoutQuotes(parsedOutput);
+      await navigator.clipboard.writeText(formattedText);
       toast.success("Text copied to clipboard!");
     } catch (err) {
       toast.error("Failed to copy text. Please try again.");
     }
   };
-
-  useEffect(() => {
-    updateLineCount(input, setInputLineCount);
-    if (parsedOutput) {
-      updateLineCount(
-        JSON.stringify(parsedOutput, null, 2),
-        setOutputLineCount
-      );
-    }
-  }, []);
 
   const lineNumbers = (count) => {
     return Array.from({ length: count }, (_, i) => i + 1).map((num) => (
@@ -103,6 +164,29 @@ const JsonParser = () => {
             className={styles.textArea}
             wrap="off"
           />
+          <div className={styles.inputButtons}>
+            <button
+              onClick={clearContent}
+              className={`${styles.actionButton} ${styles.clearButton}`}
+              title="Clear content"
+            >
+              🗑️
+            </button>
+            <button
+              onClick={pasteContent}
+              className={`${styles.actionButton} ${styles.pasteButton}`}
+              title="Paste content"
+            >
+              📋
+            </button>
+            <button
+              onClick={formatJSON}
+              className={`${styles.actionButton} ${styles.formatButton}`}
+              title="Format content"
+            >
+              🔄
+            </button>
+          </div>
         </div>
       </div>
 
@@ -119,36 +203,20 @@ const JsonParser = () => {
         ) : (
           <div className={styles.outputContainer}>
             <div className={styles.outputDiv}>
-              <div className={styles.lineNumbers} ref={outputLineNumbersRef}>
-                {lineNumbers(outputLineCount)}
-              </div>
               <div
                 className={`${styles.output} ${isValid ? styles.valid : ""}`}
-                onScroll={(e) => handleScroll(e, outputLineNumbersRef)}
               >
                 {parsedOutput && <JsonViewer data={parsedOutput} />}
               </div>
             </div>
 
             {parsedOutput && (
-              <button onClick={copyText} className={styles.copyButton}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
-                  <path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-                  <path d="M16 4h2a2 2 0 0 1 2 2v4" />
-                  <path d="M21 14H11" />
-                  <path d="m15 10-4 4 4 4" />
-                </svg>
+              <button
+                onClick={copyText}
+                className={styles.copyButton}
+                title="Copy content"
+              >
+                📄
               </button>
             )}
           </div>

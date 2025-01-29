@@ -2,7 +2,8 @@
   font-family: monospace;
   color: #d6ecad;
   background-color: #2d2d2d;
-  max-width: 765.61px;
+  max-width: 810px;
+  max-height: 718px;
   border-radius: 5px;
   overflow-y: auto;
   overflow-x: auto;
@@ -29,6 +30,7 @@
   margin-bottom: 5px;
   padding: 5px 0;
   color: #fff;
+  margin-left: 10px;
 }
 
 .collapsibleKey:hover {
@@ -36,7 +38,7 @@
 }
 
 .key {
-  margin-left: 8px;
+  margin-left: 12px;
 }
 
 .collapsibleContent {

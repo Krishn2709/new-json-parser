@@ -5,10 +5,10 @@ import styles from "./JsonViewer.module.scss";
 const JsonViewer = ({ data }) => {
   const [expandedKeys, setExpandedKeys] = useState({});
 
-  const toggleExpand = (keyPath) => {
+  const toggleExpand = (expand) => {
     setExpandedKeys((prev) => ({
       ...prev,
-      [keyPath]: !prev[keyPath],
+      [expand]: !prev[expand],
     }));
   };
 
@@ -31,7 +31,7 @@ const JsonViewer = ({ data }) => {
             <div className={styles.collapsibleContent}>
               {value.map((item, index) => (
                 <div key={`${keyPath}-${index}`} className={styles.arrayItem}>
-                  {renderValue(item, `${keyPath}-${index}`)}{" "}
+                  {renderValue(item, `${keyPath}-${index}`)}
                 </div>
               ))}
             </div>
@@ -57,7 +57,7 @@ const JsonViewer = ({ data }) => {
               {Object.entries(value).map(([key, val]) => (
                 <div key={`${keyPath}-${key}`} className={styles.objectItem}>
                   <span className={styles.key}>{key}:</span>{" "}
-                  {renderValue(val, `${keyPath}-${key}`)}{" "}
+                  {renderValue(val, `${keyPath}-${key}`)}
                 </div>
               ))}
             </div>

@@ -31,6 +31,7 @@
   border-radius: 4px;
   height: 79vh;
   overflow: hidden;
+  position: relative; /* Added for format button positioning */
 }
 
 .lineNumbers {
@@ -166,20 +167,85 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  padding: 1px;
+  transition: all 0.2s ease;
+  padding: 6px;
+  color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    color: rgb(194, 192, 192);
+    background-color: #666;
+    color: #fff;
     transform: scale(1.05);
   }
 
   &:active {
-    transform: scale(1);
+    transform: scale(0.95);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
   }
 }
 
 .svg {
   height: 20px;
   width: 20px;
+}
+
+.inputButtons {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.actionButton {
+  background-color: #4d4c4c;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 6px;
+  color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #666;
+    color: #fff;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.clearButton {
+  &:hover {
+    background-color: #663333;
+  }
+}
+
+.pasteButton {
+  &:hover {
+    background-color: #335533;
+  }
+}
+
+.formatButton {
+  &:hover {
+    background-color: #333366;
+  }
 }

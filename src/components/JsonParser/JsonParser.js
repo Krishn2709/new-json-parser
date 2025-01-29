@@ -17,6 +17,8 @@ const JsonParser = () => {
     (state) => state.json
   );
   const [inputLineCount, setInputLineCount] = useState(1);
+  const [isFormatted, setIsFormatted] = useState(false);
+  const [unformattedInput, setUnformattedInput] = useState("");
 
   const textAreaRef = useRef(null);
   const inputLineNumbersRef = useRef(null);
@@ -39,11 +41,19 @@ const JsonParser = () => {
     }
 
     try {
-      const parsed = JSON.parse(input);
-      const formatted = JSON.stringify(parsed, null, 2);
-      dispatch(setInput(formatted));
-      updateLineCount(formatted, setInputLineCount);
-      toast.success("JSON formatted successfully!");
+      if (!isFormatted) {
+        setUnformattedInput(input);
+        const parsed = JSON.parse(input);
+        const formatted = JSON.stringify(parsed, null, 2);
+        dispatch(setInput(formatted));
+        updateLineCount(formatted, setInputLineCount);
+        toast.success("JSON formatted successfully!");
+      } else {
+        dispatch(setInput(unformattedInput));
+        updateLineCount(unformattedInput, setInputLineCount);
+        toast.success("JSON unformatted successfully!");
+      }
+      setIsFormatted(!isFormatted);
     } catch (err) {
       dispatch(setError("Invalid JSON format: " + err.message));
     }
@@ -54,6 +64,8 @@ const JsonParser = () => {
     dispatch(setParsedOutput(null));
     dispatch(setError(""));
     setInputLineCount(1);
+    setIsFormatted(false);
+    setUnformattedInput("");
     toast.success("Content cleared!");
   };
 
@@ -62,6 +74,7 @@ const JsonParser = () => {
       const text = await navigator.clipboard.readText();
       dispatch(setInput(text));
       updateLineCount(text, setInputLineCount);
+      setIsFormatted(false);
       toast.success("Content pasted successfully!");
     } catch (err) {
       toast.error("Failed to paste content. Please try again.");
@@ -138,7 +151,6 @@ const JsonParser = () => {
   };
 
   const handleScroll = (e, lineNumbersRef) => {
-    console.log("lineNumbersRef:", lineNumbersRef?.current);
     if (lineNumbersRef?.current) {
       lineNumbersRef.current.scrollTop = e?.target?.scrollTop;
     }
@@ -146,24 +158,13 @@ const JsonParser = () => {
 
   return (
     <div className={styles.jsonParser}>
-      <div className={styles.inputSection}>
-        <label htmlFor="jsonInput" className={styles.label}>
-          Enter JSON:
-        </label>
-        <div className={styles.textAreaDiv}>
-          <div className={styles.lineNumbers} ref={inputLineNumbersRef}>
-            {lineNumbers(inputLineCount)}
-          </div>
-          <textarea
-            ref={textAreaRef}
-            id="jsonInput"
-            value={input}
-            onChange={handleInputChange}
-            onScroll={(e) => handleScroll(e, inputLineNumbersRef)}
-            placeholder="Paste your JSON here..."
-            className={styles.textArea}
-            wrap="off"
-          />
+      <div
+        className={`${styles.inputSection} ${error ? styles.errorState : ""}`}
+      >
+        <div className={styles.inputHeader}>
+          <label htmlFor="jsonInput" className={styles.label}>
+            Enter JSON:
+          </label>
           <div className={styles.inputButtons}>
             <button
               onClick={clearContent}
@@ -182,12 +183,27 @@ const JsonParser = () => {
             <button
               onClick={formatJSON}
               className={`${styles.actionButton} ${styles.formatButton}`}
-              title="Format content"
+              title={isFormatted ? "Unformat content" : "Format content"}
             >
               🔄
             </button>
           </div>
         </div>
+        <div className={styles.textAreaDiv}>
+          <div className={styles.lineNumbers} ref={inputLineNumbersRef}>
+            {lineNumbers(inputLineCount)}
+          </div>
+          <textarea
+            ref={textAreaRef}
+            id="jsonInput"
+            value={input}
+            onChange={handleInputChange}
+            onScroll={(e) => handleScroll(e, inputLineNumbersRef)}
+            placeholder="Paste your JSON here..."
+            className={styles.textArea}
+          />
+        </div>
+        {error && <div className={styles.error}>{error}</div>}
       </div>
 
       <div className={styles.buttonContainer}>
@@ -197,9 +213,11 @@ const JsonParser = () => {
       </div>
 
       <div className={styles.outputSection}>
-        <label className={styles.label}>Parsed Output:</label>
+        <label className={`${styles.label} ${styles.outputlabel}`}>
+          Parsed Output:
+        </label>
         {error ? (
-          <div className={styles.error}>{error}</div>
+          <div className={styles.outputDiv}></div>
         ) : (
           <div className={styles.outputContainer}>
             <div className={styles.outputDiv}>

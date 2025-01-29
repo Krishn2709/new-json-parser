@@ -15,9 +15,21 @@
   width: 100%;
 }
 
-.label {
-  display: block;
+.inputSection.errorState {
+  .textAreaDiv {
+    border-color: #632626;
+    border-width: 2px;
+  }
+}
+
+.inputHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 8px;
+}
+
+.label {
   font-weight: 500;
   color: #c0c0c0;
   font-size: large;
@@ -32,6 +44,10 @@
   height: 79vh;
   overflow: hidden;
   position: relative;
+}
+
+.outputDiv {
+  margin-top: 18px;
 }
 
 .lineNumbers {
@@ -65,7 +81,9 @@
   font-family: monospace;
   line-height: 1.4;
   overflow-y: auto;
-  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+
   &::-webkit-scrollbar-track {
     background: #1e1e1e;
   }
@@ -76,12 +94,11 @@
 
   &::-webkit-scrollbar {
     width: 8px;
-    height: 8px;
   }
-}
 
-.textArea:focus {
-  outline: none;
+  &:focus {
+    outline: none;
+  }
 }
 
 .parseButton {
@@ -116,10 +133,10 @@
   height: 100%;
   white-space: pre-wrap;
   background-color: transparent;
-  white-space: pre;
   color: #e0e0e0;
   font-family: monospace;
   line-height: 1.4;
+  overflow-y: auto;
 }
 
 .error {
@@ -128,6 +145,7 @@
   border: 1px solid #632626;
   border-radius: 4px;
   color: #ff9999;
+  margin-top: 10px;
 }
 
 .valid {
@@ -176,18 +194,9 @@
   }
 }
 
-.svg {
-  height: 20px;
-  width: 20px;
-}
-
 .inputButtons {
-  position: absolute;
-  top: 10px;
-  right: 20px;
   display: flex;
   gap: 8px;
-  z-index: 10;
 }
 
 .actionButton {

@@ -31,7 +31,7 @@
   border-radius: 4px;
   height: 79vh;
   overflow: hidden;
-  position: relative; /* Added for format button positioning */
+  position: relative;
 }
 
 .lineNumbers {
@@ -120,20 +120,6 @@
   color: #e0e0e0;
   font-family: monospace;
   line-height: 1.4;
-  overflow-y: auto;
-  overflow-x: auto;
-  &::-webkit-scrollbar-track {
-    background: #1e1e1e;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #555;
-  }
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
 }
 
 .error {

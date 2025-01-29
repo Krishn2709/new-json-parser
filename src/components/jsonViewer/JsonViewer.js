@@ -29,7 +29,7 @@ const JsonViewer = ({ data }) => {
           </div>
           {isExpanded && (
             <div className={styles.collapsibleContent}>
-              {value.map((item, index) => (
+              {value?.map((item, index) => (
                 <div key={`${keyPath}-${index}`} className={styles.arrayItem}>
                   {renderValue(item, `${keyPath}-${index}`)}
                 </div>

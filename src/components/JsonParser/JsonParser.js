@@ -17,6 +17,7 @@ const JsonParser = () => {
     (state) => state.json
   );
   const [inputLineCount, setInputLineCount] = useState(1);
+
   const textAreaRef = useRef(null);
   const inputLineNumbersRef = useRef(null);
 
@@ -137,8 +138,9 @@ const JsonParser = () => {
   };
 
   const handleScroll = (e, lineNumbersRef) => {
-    if (lineNumbersRef.current) {
-      lineNumbersRef.current.scrollTop = e.target.scrollTop;
+    console.log("lineNumbersRef:", lineNumbersRef?.current);
+    if (lineNumbersRef?.current) {
+      lineNumbersRef.current.scrollTop = e?.target?.scrollTop;
     }
   };
 

@@ -6,7 +6,8 @@
   max-height: 745px;
   border-radius: 5px;
   overflow-y: auto;
-  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
   &::-webkit-scrollbar-track {
     background: #1e1e1e;
   }

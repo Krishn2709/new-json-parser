@@ -213,9 +213,24 @@ const JsonParser = () => {
       </div>
 
       <div className={styles.outputSection}>
-        <label className={`${styles.label} ${styles.outputlabel}`}>
-          Parsed Output:
-        </label>
+        <div className={styles.inputHeader}>
+          <label className={`${styles.label} ${styles.outputlabel}`}>
+            Parsed Output:
+          </label>
+
+          {parsedOutput && (
+            <div className={styles.inputButtons}>
+              <button
+                onClick={copyText}
+                className={styles.copyButton}
+                title="Copy content"
+              >
+                📄
+              </button>
+            </div>
+          )}
+        </div>
+
         {error ? (
           <div className={styles.outputDiv}></div>
         ) : (
@@ -227,16 +242,6 @@ const JsonParser = () => {
                 {parsedOutput && <JsonViewer data={parsedOutput} />}
               </div>
             </div>
-
-            {parsedOutput && (
-              <button
-                onClick={copyText}
-                className={styles.copyButton}
-                title="Copy content"
-              >
-                📄
-              </button>
-            )}
           </div>
         )}
       </div>

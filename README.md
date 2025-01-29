@@ -27,8 +27,6 @@ A simple and intuitive JSON Parser built with **Next.js 15**, **Redux**, and **S
 │   │   ├── 📂 JsonViewer (Collapsible JSON Viewer)
 │   ├── 📂 lib
 │   │   ├── 📂 store (Redux Store & Slice for JSON Parsing)
-│   ├── 📂 styles (SCSS Modules)
-│   ├── 📂 pages (App Pages)
 └── 📜 README.md
 ```
 
@@ -36,7 +34,7 @@ A simple and intuitive JSON Parser built with **Next.js 15**, **Redux**, and **S
 
 1. **Clone the repository**:
    ```sh
-   git clone https://github.com/your-username/json-parser-app.git
+   git clone https://github.com/Krishn2709/new-json-parser.git
    cd json-parser-app
    ```
 
@@ -60,13 +58,6 @@ A simple and intuitive JSON Parser built with **Next.js 15**, **Redux**, and **S
 3. Click **Decode** to parse and view the JSON structure.
 4. Use **Collapsible View** to navigate complex JSON objects.
 5. Click **Copy** (📄) to copy the formatted JSON.
-
-## 🎨 UI Preview
-
-| Feature            | Screenshot |
-|--------------------|------------|
-| JSON Editor       | ![Editor](https://via.placeholder.com/300) |
-| Parsed JSON View  | ![Viewer](https://via.placeholder.com/300) |
 
 ## 🛠️ Development Notes
 

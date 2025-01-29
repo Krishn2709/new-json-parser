@@ -5,10 +5,10 @@ import styles from "./JsonViewer.module.scss";
 const JsonViewer = ({ data }) => {
   const [expandedKeys, setExpandedKeys] = useState({});
 
-  const toggleExpand = (expand) => {
+  const toggleExpand = (keyPath) => {
     setExpandedKeys((prev) => ({
       ...prev,
-      [expand]: !prev[expand],
+      [keyPath]: !prev[keyPath],
     }));
   };
 

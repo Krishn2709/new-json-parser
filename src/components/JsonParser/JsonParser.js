@@ -120,8 +120,6 @@ const JsonParser = () => {
     if (!parsedOutput) return;
 
     try {
-      console.log(parsedOutput);
-      console.log(formatJSONWithoutQuotes(parsedOutput));
       const formattedText = formatJSONWithoutQuotes(parsedOutput);
       await navigator.clipboard.writeText(formattedText);
       toast.success("Text copied to clipboard!");
